@@ -1,8 +1,11 @@
 <script lang="ts">
   
+  
+
 </script>
 
 <main class="container p-7 bg-gray-100 shadow-lg mx-auto my-5">
+
   <h1 class="text-center text-2xl text-gray-600">Apa yang harus dikerjakan?</h1>
   <input type="text" class="border-black border-2 mt-7 w-full py-5">
   <button class="w-full bg-slate-800 text-gray-400 mt-2 py-3 hover:bg-slate-950">Tambah</button>
