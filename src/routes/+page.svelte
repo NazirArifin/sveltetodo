@@ -1,5 +1,16 @@
 <script lang="ts">
   
+  let todos: {
+    id: number;
+    text: string;
+    completed: boolean;
+  }[] = [
+    { id: 1, text: 'Buat starter app dengan Svelte', completed: true },
+    { id: 2, text: 'Buat component pertama kali', completed: true },
+    { id: 3, text: 'Selesaikan semua tutorial', completed: false },
+  ];
+  let totalTodos = todos.length;
+  let completedTodos = todos.filter(todo => todo.completed).length;
 
 </script>
 
@@ -17,21 +28,21 @@
   </div>
 
   <div class="w-3/4 mx-auto pt-5">
-    <h2 class="font-semibold text-3xl">2 dari 3 hal diselesaikan</h2>
+    <h2 class="font-semibold text-3xl">{completedTodos} dari {totalTodos} hal diselesaikan</h2>
   </div>
 
   <!-- item todo  -->
   <ul>
-    
+    {#each todos as todo, index (todo.id)}
     <li class="w-3/4 mx-auto pt-5">
       <label class="flex items-center">
-        <input type="checkbox" class="hidden peer" checked>
+        <input type="checkbox" class="hidden peer" checked={todo.completed}>
         <span class="w-10 h-10 border-2 cursor-pointer bg-white border-gray-600 *:peer-checked:text-gray-600">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
             <path d="M20 6 9 17l-5-5"/>
           </svg>
         </span>
-        <span class="ml-2 text-base font-semibold text-gray-600">Buat starter app dengan Svelte</span>
+        <span class="ml-2 text-base font-semibold text-gray-600">{todo.text}</span>
       </label>
 
       <div class="flex gap-2 mt-3">
@@ -39,7 +50,9 @@
         <button class="border-black border grow bg-red-900 text-white p-2 hover:bg-red-800">Hapus</button>
       </div>
     </li>
-    
+    {:else}
+    <p class="text-center text-red-600 font-semibold text-3xl mt-5">Tidak ada data</p>
+    {/each}
   </ul>
 
   <!-- tombol aksi  -->
