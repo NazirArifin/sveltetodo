@@ -1,27 +1,30 @@
 <script lang="ts">
   import Actionbuttons from "$lib/components/actionbuttons.svelte";
+  import { alert, todos } from "../stores";
+  import Alert from "$lib/components/alert.svelte";
   import Filterbuttons from "$lib/components/filterbuttons.svelte";
   import Todoitem from "$lib/components/todoitem.svelte";
   import type { Todo } from "$lib/types/todo";
 
-  let todos: Todo[] = [
+  $todos = [
     { id: 1, text: 'Buat starter app dengan Svelte', completed: true },
     { id: 2, text: 'Buat component pertama kali', completed: true },
     { id: 3, text: 'Selesaikan semua tutorial', completed: false },
   ];
-  $: totalTodos = todos.length;
-  $: completedTodos = todos.filter(todo => todo.completed).length;
+  $: totalTodos = $todos.length;
+  $: completedTodos = $todos.filter(todo => todo.completed).length;
 
   function hapusTodo(id: number) {
-    todos = todos.filter(todo => todo.id !== id);
+    $todos = $todos.filter(todo => todo.id !== id);
+    $alert = 'Todo has been deleted';
   }
 
   let text = '';
   function tambahTodo() {
     if (text.trim() === '') return;
 
-    todos = [
-      ...todos,
+    $todos = [
+      ...$todos,
       {
         id: Date.now() / 1000,
         text,
@@ -29,6 +32,7 @@
       }
     ];
 
+    $alert = `Todo ${text} has been added`;
     text = '';
   }
 
@@ -37,19 +41,20 @@
   function editTodo(id: number) {
     sedangMengedit = true;
     todoId = id;
-    text = todos.find(todo => todo.id === id)!.text;
+    text = $todos.find(todo => todo.id === id)!.text;
   }
   function simpanTodo() {
-    const todo = todos.find(todo => todo.id === todoId);
-    const index = todos.findIndex(todo => todo.id === todoId);
+    const todo = $todos.find(todo => todo.id === todoId);
+    const index = $todos.findIndex(todo => todo.id === todoId);
     if (todo) {
       todo.text = text;
     }
-    const tempTodos = [...todos];
+    const tempTodos = [...$todos];
     tempTodos[index] = todo!;
-    todos = tempTodos;
+    $todos = tempTodos;
 
     sedangMengedit = false;
+    $alert = `Todo ${text} has been updated`;
     text = '';
   }
 
@@ -61,16 +66,17 @@
   }
 
   function checkAll() {
-    todos = todos.map(todo => ({ ...todo, completed: true }));
+    $todos = $todos.map(todo => ({ ...todo, completed: true }));
   }
 
   function deleteAll() {
-    todos = todos.filter(todo => !todo.completed);
+    $todos = $todos.filter(todo => !todo.completed);
   }
 
 </script>
 
 <main class="container p-7 bg-gray-100 shadow-lg mx-auto my-5">
+  <Alert />
 
   <h1 class="text-center text-2xl text-gray-600">Apa yang harus dikerjakan?</h1>
   <input type="text" bind:value={text} class="border-black border-2 mt-7 w-full py-5">
@@ -96,7 +102,7 @@
 
   <!-- item todo  -->
   <ul>
-    {#each filterTodos(filter, todos) as todo, index(todo.id)}
+    {#each filterTodos(filter, $todos) as todo, index(todo.id)}
     
     <Todoitem {todo} on:delete={(e) => hapusTodo(e.detail)} on:edit={(e) => editTodo(e.detail)} />
 
