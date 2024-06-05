@@ -1,10 +1,14 @@
 <script lang="ts">
-  
-  let todos: {
+  import Filterbuttons from "$lib/components/filterbuttons.svelte";
+
+  type Todo = {
     id: number;
     text: string;
     completed: boolean;
-  }[] = [
+  }
+
+
+  let todos: Todo[] = [
     { id: 1, text: 'Buat starter app dengan Svelte', completed: true },
     { id: 2, text: 'Buat component pertama kali', completed: true },
     { id: 3, text: 'Selesaikan semua tutorial', completed: false },
@@ -53,6 +57,13 @@
     text = '';
   }
 
+  let filter = 'all';
+  function filterTodos(filter: string, todos: Todo[]): Todo[] {
+    if (filter === 'active') return todos.filter(todo => !todo.completed);
+    if (filter === 'completed') return todos.filter(todo => todo.completed);
+    return todos;
+  }
+
 </script>
 
 <main class="container p-7 bg-gray-100 shadow-lg mx-auto my-5">
@@ -67,11 +78,7 @@
   {/if}
 
   <!-- tombol filter -->
-  <div class="flex mx-auto w-3/4 pt-3 gap-2">
-    <button class="border-black border bg-white p-2 hover:bg-gray-100 w-44 underline">Semua</button>
-    <button class="border-gray-300 border bg-white p-2 hover:bg-gray-100 w-44">Aktif</button>
-    <button class="border-gray-300 border bg-white p-2 hover:bg-gray-100 w-44">Selesai</button>
-  </div>
+  <Filterbuttons bind:filter />
 
   <div class="w-3/4 mx-auto pt-5">
     <h2 class="font-semibold text-3xl">{completedTodos} dari {totalTodos} hal diselesaikan</h2>
@@ -79,7 +86,7 @@
 
   <!-- item todo  -->
   <ul>
-    {#each todos as todo, index(todo.id)}
+    {#each filterTodos(filter, todos) as todo, index(todo.id)}
     <li class="w-3/4 mx-auto pt-5">
       <button class="flex items-center" on:click={() => todo.completed = !todo.completed}>
         <input type="checkbox" class="hidden peer" checked={todo.completed}>
@@ -109,7 +116,7 @@
 
     <label class="flex items-center gap-2">
       <button class="grow bg-black text-white p-2 hover:bg-gray-900">Pilih Semua</button>
-      <button class="grow bg-black text-white p-2 hover:bg-gray-900">Hapus Terpilih</button>
+      <button class="grow bg-black text-white p-2 hover:bg-gray-900">Hapus Diselesaikan</button>
     </label>
   </div>
 
