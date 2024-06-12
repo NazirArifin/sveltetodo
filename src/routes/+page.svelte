@@ -5,12 +5,12 @@
   import Filterbuttons from "$lib/components/filterbuttons.svelte";
   import Todoitem from "$lib/components/todoitem.svelte";
   import type { Todo } from "$lib/types/todo";
+  import type { PageData } from "./$types";
+  import { enhance } from "$app/forms";
 
-  $todos = [
-    { id: 1, text: 'Buat starter app dengan Svelte', completed: true },
-    { id: 2, text: 'Buat component pertama kali', completed: true },
-    { id: 3, text: 'Selesaikan semua tutorial', completed: false },
-  ];
+  export let data: PageData;
+
+  $todos = data.todos;
   $: totalTodos = $todos.length;
   $: completedTodos = $todos.filter(todo => todo.completed).length;
 
@@ -20,22 +20,6 @@
   }
 
   let text = '';
-  function tambahTodo() {
-    if (text.trim() === '') return;
-
-    $todos = [
-      ...$todos,
-      {
-        id: Date.now() / 1000,
-        text,
-        completed: false
-      }
-    ];
-
-    $alert = `Todo ${text} has been added`;
-    text = '';
-  }
-
   let sedangMengedit = false;
   let todoId = 0;
   function editTodo(id: number) {
@@ -53,21 +37,6 @@
     const tempTodos = [...$todos];
     tempTodos[index] = todo!;
     $todos = tempTodos;
-  }
-
-  function simpanTodo() {
-    const todo = $todos.find(todo => todo.id === todoId);
-    const index = $todos.findIndex(todo => todo.id === todoId);
-    if (todo) {
-      todo.text = text;
-    }
-    const tempTodos = [...$todos];
-    tempTodos[index] = todo!;
-    $todos = tempTodos;
-
-    sedangMengedit = false;
-    $alert = `Todo ${text} has been updated`;
-    text = '';
   }
 
   let filter = 'all';
@@ -89,21 +58,24 @@
 
 <main class="container p-7 bg-gray-100 shadow-lg mx-auto my-5">
   <Alert />
-
-  <h1 class="text-center text-2xl text-gray-600">Apa yang harus dikerjakan?</h1>
-  <input type="text" bind:value={text} class="border-black border-2 mt-7 w-full py-5">
   
-  {#if !sedangMengedit}
-  <button class="w-full bg-slate-800 text-gray-400 mt-2 py-3 hover:bg-slate-950" on:click={() => tambahTodo()}>Tambah</button>
-  {:else}
-  <div class="flex gap-2">
-    <button class="w-full bg-blue-800 text-gray-400 mt-2 py-3 hover:bg-slate-950" on:click={() => simpanTodo()}>Simpan</button>
-    <button class="w-full bg-red-800 text-gray-400 mt-2 py-3 hover:bg-slate-950" on:click={() => {
-      sedangMengedit = false;
-      text = '';
-    }}>Batal</button>
-  </div>
-  {/if}
+  <h1 class="text-center text-2xl text-gray-600">Apa yang harus dikerjakan?</h1>
+  
+  <form method="post" action="?/addTodo" use:enhance>
+    <input type="text" name="text" bind:value={text} class="border-black border-2 mt-7 w-full py-5">
+    
+    {#if !sedangMengedit}
+    <button class="w-full bg-slate-800 text-gray-400 mt-2 py-3 hover:bg-slate-950" type="submit">Tambah</button>
+    {:else}
+    <div class="flex gap-2">
+      <button class="w-full bg-blue-800 text-gray-400 mt-2 py-3 hover:bg-slate-950" type="submit">Simpan</button>
+      <button class="w-full bg-red-800 text-gray-400 mt-2 py-3 hover:bg-slate-950" on:click={() => {
+        sedangMengedit = false;
+        text = '';
+      }}>Batal</button>
+    </div>
+    {/if}
+  </form>
 
   <!-- tombol filter -->
   <Filterbuttons bind:filter />
