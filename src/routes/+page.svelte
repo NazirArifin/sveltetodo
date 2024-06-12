@@ -43,6 +43,18 @@
     todoId = id;
     text = $todos.find(todo => todo.id === id)!.text;
   }
+
+  function changeCompleted(id: number) {
+    const todo = $todos.find(todo => todo.id === id);
+    const index = $todos.findIndex(todo => todo.id === id);
+    if (todo) {
+      todo.completed = !todo.completed;
+    }
+    const tempTodos = [...$todos];
+    tempTodos[index] = todo!;
+    $todos = tempTodos;
+  }
+
   function simpanTodo() {
     const todo = $todos.find(todo => todo.id === todoId);
     const index = $todos.findIndex(todo => todo.id === todoId);
@@ -104,7 +116,7 @@
   <ul>
     {#each filterTodos(filter, $todos) as todo, index(todo.id)}
     
-    <Todoitem {todo} on:delete={(e) => hapusTodo(e.detail)} on:edit={(e) => editTodo(e.detail)} />
+    <Todoitem {todo} on:delete={(e) => hapusTodo(e.detail)} on:edit={(e) => editTodo(e.detail)} on:completed={(e) => changeCompleted(e.detail)} />
 
     {:else}
     <p class="text-center text-red-600 font-semibold text-3xl mt-5">Tidak ada data</p>

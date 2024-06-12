@@ -8,7 +8,7 @@
 </script>
 
 <li class="w-3/4 mx-auto pt-5">
-  <button class="flex items-center" on:click={() => todo.completed = !todo.completed}>
+  <button class="flex items-center" on:click={() => dispatch('completed', todo.id)}>
     <input type="checkbox" class="hidden peer" checked={todo.completed}>
     <span class="w-10 h-10 border-2 cursor-pointer bg-white border-gray-600 *:peer-checked:text-gray-600">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white">
