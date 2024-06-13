@@ -5,10 +5,10 @@
   import Filterbuttons from "$lib/components/filterbuttons.svelte";
   import Todoitem from "$lib/components/todoitem.svelte";
   import type { Todo } from "$lib/types/todo";
-  import type { PageData } from "./$types";
-  import { enhance } from "$app/forms";
+  import type { ActionData, PageData } from "./$types";
 
   export let data: PageData;
+  export let form: ActionData;
 
   $todos = data.todos;
   $: totalTodos = $todos.length;
@@ -54,14 +54,28 @@
     $todos = $todos.filter(todo => !todo.completed);
   }
 
+  // const onSubmit = () => {
+  //   return ({ result, update }: { result: any, update: any }) => {
+  //     if (result.type === 'success') {
+  //       $todos = result.data.todos || [];
+  //       $alert = 'Todo has been added';
+  //     }
+  //     update();
+  //   };
+  // };
+
 </script>
 
 <main class="container p-7 bg-gray-100 shadow-lg mx-auto my-5">
   <Alert />
   
   <h1 class="text-center text-2xl text-gray-600">Apa yang harus dikerjakan?</h1>
-  
-  <form method="post" action="?/addTodo" use:enhance>
+
+  <form method="post" action="?/addTodo">
+    {#if form?.error}
+    <p class="text-white bg-red-600 p-5 font-semibold shadow mt-5">{form.message}</p>
+    {/if}
+    
     <input type="text" name="text" bind:value={text} class="border-black border-2 mt-7 w-full py-5">
     
     {#if !sedangMengedit}
