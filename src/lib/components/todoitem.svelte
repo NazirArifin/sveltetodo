@@ -20,6 +20,10 @@
 
   <div class="flex gap-2 mt-3">
     <button on:click={() => dispatch('edit', todo.id)} class="border-black border grow bg-white p-2 hover:bg-gray-100">Edit</button>
-    <button on:click={() => dispatch('delete', todo.id)} class="border-black border grow bg-red-900 text-white p-2 hover:bg-red-800">Hapus</button>
+
+    <form method="post" action="?/deleteTodo">
+      <input type="hidden" name="id" value="{todo.id}">
+      <button class="border-black border grow bg-red-900 text-white p-2 hover:bg-red-800">Hapus</button>
+    </form>
   </div>
 </li>

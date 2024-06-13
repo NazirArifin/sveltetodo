@@ -71,12 +71,13 @@
   
   <h1 class="text-center text-2xl text-gray-600">Apa yang harus dikerjakan?</h1>
 
-  <form method="post" action="?/addTodo">
+  <form method="post" action={ sedangMengedit ? '?/editTodo' : '?/addTodo' }>
     {#if form?.error}
     <p class="text-white bg-red-600 p-5 font-semibold shadow mt-5">{form.message}</p>
     {/if}
     
     <input type="text" name="text" bind:value={text} class="border-black border-2 mt-7 w-full py-5">
+    <input type="hidden" name="id" value={todoId}>
     
     {#if !sedangMengedit}
     <button class="w-full bg-slate-800 text-gray-400 mt-2 py-3 hover:bg-slate-950" type="submit">Tambah</button>

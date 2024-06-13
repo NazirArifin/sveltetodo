@@ -11,22 +11,17 @@ const createTodo = async (todo: Todo) => {
   }
 };
 
-const getTodo = async (id: number) => {
-  const pool = getPool();
-  try {
-    const result = await pool.query("SELECT * FROM todos WHERE id = ?", [id]);
-    return result[0];
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-};
-
 const getAllTodos = async () => {
   const pool = getPool();
   try {
     const result = await pool.query("SELECT * FROM todos");
-    return result;
+    return result.map((row: any) => {
+      return {
+        id: row.id,
+        text: row.text,
+        completed: row.completed === 1
+      };
+    });
   } catch (error) {
     console.error(error);
     throw error;
@@ -36,7 +31,7 @@ const getAllTodos = async () => {
 const updateTodo = async (id: number, todo: Todo) => {
   const pool = getPool();
   try {
-    await pool.query("UPDATE todos SET text = ?, completed = ? WHERE id = ?", [todo.text, todo.completed, id]);
+    await pool.query("UPDATE todos SET text = ?, completed = ? WHERE id = ?", [todo.text, todo.completed  ?  1 : 0, id]);
   } catch (error) {
     console.error(error);
     throw error;
@@ -53,4 +48,4 @@ const deleteTodo = async (id: number) => {
   }
 };
 
-export { createTodo, getTodo, getAllTodos, updateTodo, deleteTodo };
+export { createTodo, getAllTodos, updateTodo, deleteTodo };
